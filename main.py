@@ -2,20 +2,17 @@ from flask import Flask
 from flasgger import Swagger
 from flask_cors import CORS
 from app.routes import auth_bp
-from dotenv import load_dotenv
+from flask_jwt_extended import JWTManager
 import os
 
-load_dotenv()
-
 app = Flask(__name__)
-CORS(app)
-app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
-app.config['SWAGGER'] = {
-    'title': 'Login Service Educarural',
-    'uiversion': 3
-}
 
+app.config['JWT_SECRET_KEY'] = 'ef(b$7lyx4-qjio((fcy!=c*ob0+k)b+m96o6ock=tc)ot@@ht'
+
+jwt = JWTManager(app)
+CORS(app)
 Swagger(app)
+
 app.register_blueprint(auth_bp, url_prefix='/api')
 
 if __name__ == '__main__':
