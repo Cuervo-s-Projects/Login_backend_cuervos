@@ -17,7 +17,7 @@ python main.py
 ### Login
 
 ```bash
-http://127.0.0.1:5001/api/auth/login
+http://127.0.0.1:5001/api/login
 ```
 
 ```json
@@ -33,7 +33,7 @@ http://127.0.0.1:5001/api/auth/login
 ### Sign Up
 
 ```bash
-http://127.0.0.1:5001/api/auth/signup
+http://127.0.0.1:5001/api/signup
 ```
 
 ```json
