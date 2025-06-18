@@ -24,8 +24,8 @@ class UserService:
         self.repository.create(user)
         return "OK"
     
-    def authenticate(self, username, password):
-        user = self.repository.find_by_username(username=username)
+    def authenticate(self, email, password):
+        user = self.repository.find_by_email(email=email)
         if not user:
             return None
         if check_password_hash(user.password, password):

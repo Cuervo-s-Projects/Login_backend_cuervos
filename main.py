@@ -13,7 +13,7 @@ jwt = JWTManager(app)
 CORS(app,
     resources={
         r"/api/*": {
-            "origins": ["http://localhost:3000", "http://127.0.1.0:3000"],
+            "origins": ["http://localhost:3000"],
             "methods": ["GET", "POST", "OPTIONS", "PUT", "DELETE"],
             "allow_headers": ["Content-Type", "Authorization"],
             }
