@@ -1,10 +1,10 @@
 from flask import Blueprint, request, jsonify, render_template
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, get_jwt
 
-from ..service.user_service import UserService
-from ..utils.error import InvalidRequest, validate_json
+from .service import UserService
 
 from flasgger import swag_from
+
 import os
 import re
 
@@ -57,32 +57,39 @@ def sign_up():
         
         required_fields = ['username', 'email', 'password', 'password_confirm']
         if not all(field in data for field in required_fields):
-            raise InvalidRequest("Required fields are missing")
+            return jsonify({
+              "message": "Required fields are missing"
+            }),400
 
         if data['password'] != data['password_confirm']:
-            raise InvalidRequest("Passwords do not match")
+            return jsonify({
+              "message": "Passwords do not match"
+            }),400
 
         service = UserService()
-        user = service.create_user(            
+        status = service.create_user(            
                 email=data['email'],
                 username=data['username'],
                 password=data['password']
                 )
         
+        if status == "OK":
+          return jsonify({
+              "message": "User successfully created"
+          }),201
+        
         return jsonify({
-            "message": "User successfully created",
-            "status_code": 201
-        })
+              "message": status
+          }),400
+
     
     except Exception as e:
         return jsonify({
-            "message": str(e),
-            "status_code": 400
-        })
+            "message": str(e)
+        }),400
 
 
 @auth_bp.route('/login', methods=['POST'])
-
 def login():
     """
     Login de usuario
@@ -115,20 +122,22 @@ def login():
         description: Credenciales inválidas
     """
     data = request.get_json()
-    username = data['username']
+    email = data['email']
     password = data['password']
 
     service = UserService()
-    user = service.authenticate(username=username, password=password)
+    user = service.authenticate(email=email, password=password)
     
     if not user:
-        raise InvalidRequest("Incorrect email or password", 401)
+      return jsonify({
+            "message": "Incorrect user or password"
+        }),401
     
     access_token = create_access_token(identity={
-    "email": user.email,
-    "username": user.username
+      "email": user.email,
+      "username": user.username
     })
-    print(access_token)
+
     response =  jsonify({
         "access_token": access_token
     })
