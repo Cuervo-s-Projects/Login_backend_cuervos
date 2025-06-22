@@ -1,4 +1,4 @@
-from .models import User
+from app.models import User
 from config.db import mongodb
 
 class Repository:
@@ -11,6 +11,10 @@ class Repository:
             'username': user.username,
             'email': user.email,
             'password': user.password,
+            'last_name': user.last_name,
+            'first_name': user.first_name,
+            'age': user.age,
+            'date_birth': user.date_birth, 
             'is_active': user.is_active,
             'roles': user.roles,
             'created_at': user.created_at,
@@ -41,6 +45,10 @@ class Repository:
             'username': user.username,
             'email': user.email,
             'password': user.password,
+            'last_name': user.last_name,
+            'first_name': user.first_name,
+            'age': user.age,
+            'date_birth': user.date_birth,
             'is_active': user.is_active,
             'roles': user.roles,
             'created_at': user.created_at,

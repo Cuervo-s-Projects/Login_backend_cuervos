@@ -1,21 +1,16 @@
-from flask import Blueprint, request, jsonify, render_template
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, get_jwt
-
-from .service import UserService
-
+from flask import Blueprint, request, jsonify
 from flasgger import swag_from
 
-import os
-import re
-
-auth_bp = Blueprint('auth', __name__)
+from app.utils import send_verification_email
+from app.service import UserService
 
 
+auth_bp = Blueprint('auth', __name__, url_prefix='/api')
 
 @auth_bp.route('/signup', methods=['POST'])
 def sign_up():
     """
-    Login de usuario
+    Login of user
     ---
     tags:
       - Autenticación
@@ -30,15 +25,35 @@ def sign_up():
             - email
             - password
             - password_confirm
+            - last_name
+            - first_name
+            - age
+            - date_birth
           properties:
             username:
               type: string
+              example: luis
             email:
               type: string
+              example: luis@gmail.com
             password:
               type: string
+              example: 1234
             password_confirm:
               type: string
+              example: 1234
+            last_name:
+              type: string
+              example: luis
+            first_name:
+              type: string
+              example: Gonzales
+            age:
+              type: string
+              example: 20
+            date_birth:
+              type: date
+              example: 2025-06-17T21:33:47.200+00:00
               
     responses:
       200:
@@ -54,25 +69,31 @@ def sign_up():
     """
     try:
         data = request.get_json()
-        
-        required_fields = ['username', 'email', 'password', 'password_confirm']
+        required_fields = ['username', 'email', 'password', 'password_confirm', 'last_name', 'first_name', 'age', 'date_birth']
         if not all(field in data for field in required_fields):
             return jsonify({
               "message": "Required fields are missing"
             }),400
 
-        if data['password'] != data['password_confirm']:
+        if data.get('password') != data.get('password_confirm'):
             return jsonify({
               "message": "Passwords do not match"
             }),400
-
+        
         service = UserService()
         status = service.create_user(            
-                email=data['email'],
-                username=data['username'],
-                password=data['password']
+                email=data.get('email'),
+                username=data.get('username'),
+                password=data.get('password'),
+                last_name=data.get('last_name'),
+                first_name=data.get('first_name'),
+                age=data.get('age'),
+                date_birth=data.get('date_birth')
                 )
         
+        token = service.generate_email_token(data.get('email'))
+        send = send_verification_email(email=data.get('email'), token=token)
+
         if status == "OK":
           return jsonify({
               "message": "User successfully created"
@@ -92,7 +113,7 @@ def sign_up():
 @auth_bp.route('/login', methods=['POST'])
 def login():
     """
-    Login de usuario
+    Signup of user
     ---
     tags:
       - Autenticación
@@ -103,13 +124,15 @@ def login():
         schema:
           type: object
           required:
-            - username
+            - email
             - password
           properties:
-            username:
+            email:
               type: string
+              example: luis@gmail.com
             password:
               type: string
+              example: 1234
     responses:
       200:
         description: Login exitoso
@@ -121,26 +144,48 @@ def login():
       401:
         description: Credenciales inválidas
     """
-    data = request.get_json()
-    email = data['email']
-    password = data['password']
+    try:
+      data = request.get_json()
 
-    service = UserService()
-    user = service.authenticate(email=email, password=password)
-    
-    if not user:
+      if not data or 'email' not in data or 'password' not in data:
+            return jsonify({"message": "Email and password are required"}), 400
+      
+      email = data.get('email')
+      password = data.get('password')
+
+      service = UserService()
+      user = service.authenticate(email=email, password=password)
+      
+      if not user:
+        return jsonify({
+              "message": "Incorrect user or password"
+          }),401
+      
+      access_token = service.generate_jwt_token(email=user.email, username=user.username)
+
       return jsonify({
-            "message": "Incorrect user or password"
-        }),401
+          "access_token": access_token
+      }), 200
+    except Exception as e:
+        return jsonify({
+            "message": str(e)
+        }),400
     
-    access_token = create_access_token(identity={
-      "email": user.email,
-      "username": user.username
-    })
 
-    response =  jsonify({
-        "access_token": access_token
-    })
-
-    response.status_code = 200
-    return response
+@auth_bp.route('/verify-email/<token>', methods=['GET'])
+def verify_email(token):
+  try:
+    service = UserService()
+    email = service.confirm_verification_token(token)
+    if email is None:
+       return jsonify({
+              "message": "Incorrect token"
+          }),401
+    
+    user = service.get_by_email(email)
+    user.is_active = True
+    status = service.update_user(user)
+    print(status)
+    return jsonify({"message": "Email verificado con éxito"}), 200
+  except Exception as e:
+    return jsonify({"message": str(e)}), 400

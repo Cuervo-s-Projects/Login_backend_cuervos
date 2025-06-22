@@ -23,9 +23,7 @@ http://127.0.0.1:5001/api/login
 ```json
 {
   "username": "luis",
-  "email": "jluis@gmail.com",
   "password": "1234",
-  "password_confirm": "1234"
 }
 
 ```
@@ -38,7 +36,13 @@ http://127.0.0.1:5001/api/signup
 
 ```json
 {
-  "username": "luis",
-  "password": "1234",
+  "age": 20,
+  "date_birth": "Tue, 17 Jun 2025 21:33:47 GMT",
+  "email": "luis@gmail.com",
+  "first_name": "Gonzales",
+  "last_name": "luis",
+  "password": 1234,
+  "password_confirm": 1234,
+  "username": "luis"
 }
 ```

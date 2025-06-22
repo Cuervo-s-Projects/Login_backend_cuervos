@@ -1,10 +1,19 @@
-import jwt
-import os
-from werkzeug.security import check_password_hash
+from flask import url_for, current_app
+from flask_mail import Mail, Message
 
-def verify_password(password_plain, password_hashed):
-    return check_password_hash(password_hashed, password_plain)
+from app.extensions import mail
 
-def generate_token(email):
-    payload = {'email': email}
-    return jwt.encode(payload, os.getenv("SECRET_KEY"), algorithm='HS256')
+def send_verification_email(email, token):
+    try:
+        with current_app.app_context(): 
+            verification_url = url_for('auth.verify_email',
+                                        token=token,
+                                        _external=True)
+            
+        msg = Message('Verifica tu email', sender='noreply@demo.com', recipients=[email])
+        msg.body = f'''Para verificar tu cuenta, visita: {verification_url}\n\nSi no solicitaste esto, ignora este email.'''
+        mail.send(msg)
+        return True
+    except Exception as e:
+        current_app.logger.error(f"Error enviando email a {email}: {str(e)}")
+        return False
