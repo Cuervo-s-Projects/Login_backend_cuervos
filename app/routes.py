@@ -10,7 +10,7 @@ auth_bp = Blueprint('auth', __name__, url_prefix='/api')
 @auth_bp.route('/signup', methods=['POST'])
 def sign_up():
     """
-    Login of user
+    Signup user
     ---
     tags:
       - Autenticación
@@ -113,7 +113,7 @@ def sign_up():
 @auth_bp.route('/login', methods=['POST'])
 def login():
     """
-    Signup of user
+    Login user
     ---
     tags:
       - Autenticación
@@ -183,9 +183,8 @@ def verify_email(token):
           }),401
     
     user = service.get_by_email(email)
-    user.is_active = True
+    user.is_verified = True
     status = service.update_user(user)
-    print(status)
     return jsonify({"message": "Email verificado con éxito"}), 200
   except Exception as e:
     return jsonify({"message": str(e)}), 400

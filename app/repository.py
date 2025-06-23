@@ -1,5 +1,6 @@
 from app.models import User
 from config.db import mongodb
+from datetime import datetime
 
 class Repository:
     
@@ -16,6 +17,7 @@ class Repository:
             'age': user.age,
             'date_birth': user.date_birth, 
             'is_active': user.is_active,
+            'is_verified': user.is_verified,
             'roles': user.roles,
             'created_at': user.created_at,
             'updated_at': user.updated_at,
@@ -50,9 +52,10 @@ class Repository:
             'age': user.age,
             'date_birth': user.date_birth,
             'is_active': user.is_active,
+            'is_verified': user.is_verified,
             'roles': user.roles,
             'created_at': user.created_at,
-            'updated_at': user.updated_at,
+            'updated_at': datetime.now(),
             'metadata': user.metadata,
         }
         return self.collection.update_one(

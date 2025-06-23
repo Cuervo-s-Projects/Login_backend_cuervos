@@ -27,12 +27,12 @@ class User:
         self.last_name = last_name
         self.first_name = first_name 
 
-        self.age = age if age is not None else None
-        self.date_birth = date_birth if date_birth is not None else None
+        self.age = age if age is not None else None # cambiar la condiccion
+        self.date_birth = date_birth if date_birth is not None else None # cambiar la condiccion
 
         self.is_active = is_active
         self.is_verified = is_verified
-        self.roles = roles if roles is not None else ['student']
+        self.roles = roles if roles is not None else ['student'] # cambiar la condiccion
 
         self.created_at = created_at or datetime.now()
         self.updated_at = updated_at or datetime.now()
@@ -65,10 +65,10 @@ class User:
             password=data.get('password', ''),
             last_name=data.get('last_name', ''),
             first_name=data.get('first_name', ''),
-            age=data.get('date_birth', ''),
+            age=data.get('age', ''),
             date_birth=data.get('date_birth', ''),
-            is_active=bool(data['is_active']) if 'is_active' in data else False,
-            is_verified= bool(data['is_verified']) if 'is_verified' in data else False,
+            is_active=bool(data['is_active']),
+            is_verified= bool(data['is_verified']),
             roles=data.get('roles', ['user']),
             created_at=data.get('created_at', None),
             updated_at=data.get('updated_at', None),
