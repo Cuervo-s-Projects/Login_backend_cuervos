@@ -2,9 +2,6 @@
 
 Este documento registra todos los cambios importantes realizados en el proyecto.
 
-El formato sigue la guía de [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)  
-y el sistema de versionado [SemVer](https://semver.org/lang/es/).
-
 ---
 
 ## [Unreleased]
