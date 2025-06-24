@@ -36,11 +36,8 @@ class UserService:
             return user
         return None
     
-    def generate_jwt_token(self, email, username):
-        return create_access_token(identity={
-        "email": email,
-        "username": username
-    })
+    def generate_jwt_token(self, email):
+        return create_access_token(identity=email)
     
     def get_by_email(self, email):
         user = self.repository.find_by_email(email=email)

@@ -1,6 +1,7 @@
 import pytest
 from app import create_app
 from app.extensions import mail as flask_mail
+
 from flask import url_for
 from unittest.mock import patch
 
@@ -12,6 +13,7 @@ def app():
         "MAIL_SUPPRESS_SEND": True,
         "WTF_CSRF_ENABLED": False,
         "SERVER_NAME": "localhost:5000",
+        "JWT_SECRET_KEY" : "test-secret",
     })
 
     with app.app_context():

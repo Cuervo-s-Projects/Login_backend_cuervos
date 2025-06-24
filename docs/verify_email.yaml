@@ -1,0 +1,31 @@
+tags:
+  - Autenticación
+summary: Verificación de correo electrónico
+description: Activa la cuenta de usuario mediante el token recibido por correo.
+parameters:
+  - name: token
+    in: path
+    required: true
+    description: Token de verificación enviado por correo.
+    schema:
+      type: string
+      example: eyJhbGciOiJIUzI1NiIsInR5cCI6Ikp...
+responses:
+  200:
+    description: Email verificado con éxito.
+    content:
+      application/json:
+        example:
+          message: Email verificado con éxito
+  401:
+    description: Token inválido o expirado.
+    content:
+      application/json:
+        example:
+          message: Incorrect token
+  400:
+    description: Otro error en la verificación.
+    content:
+      application/json:
+        example:
+          message: Token malformado

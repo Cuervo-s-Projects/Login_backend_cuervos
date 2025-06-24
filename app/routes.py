@@ -1,72 +1,19 @@
 from flask import Blueprint, request, jsonify
 from flasgger import swag_from
+from flask_jwt_extended import get_jwt_identity, get_jwt, jwt_required
+import os 
 
 from app.utils import send_verification_email
 from app.service import UserService
 
+root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+swagger_path = os.path.join(root_path, "docs")
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/api')
 
 @auth_bp.route('/signup', methods=['POST'])
+@swag_from(os.path.join(swagger_path, 'signup.yaml'))
 def sign_up():
-    """
-    Signup user
-    ---
-    tags:
-      - Autenticación
-    parameters:
-      - in: body
-        name: body
-        required: true
-        schema:
-          type: object
-          required:
-            - username
-            - email
-            - password
-            - password_confirm
-            - last_name
-            - first_name
-            - age
-            - date_birth
-          properties:
-            username:
-              type: string
-              example: luis
-            email:
-              type: string
-              example: luis@gmail.com
-            password:
-              type: string
-              example: 1234
-            password_confirm:
-              type: string
-              example: 1234
-            last_name:
-              type: string
-              example: luis
-            first_name:
-              type: string
-              example: Gonzales
-            age:
-              type: string
-              example: 20
-            date_birth:
-              type: date
-              example: 2025-06-17T21:33:47.200+00:00
-              
-    responses:
-      200:
-        description: Usuario creado
-        schema:
-          type: object
-          properties:
-            message:
-                type: string
-                example: User successfully created
-      400:
-        description: Error en la creacion de usuario
-    """
     try:
         data = request.get_json()
         required_fields = ['username', 'email', 'password', 'password_confirm', 'last_name', 'first_name', 'age', 'date_birth']
@@ -111,39 +58,8 @@ def sign_up():
 
 
 @auth_bp.route('/login', methods=['POST'])
+@swag_from(os.path.join(swagger_path, 'login.yaml'))   
 def login():
-    """
-    Login user
-    ---
-    tags:
-      - Autenticación
-    parameters:
-      - in: body
-        name: body
-        required: true
-        schema:
-          type: object
-          required:
-            - email
-            - password
-          properties:
-            email:
-              type: string
-              example: luis@gmail.com
-            password:
-              type: string
-              example: 1234
-    responses:
-      200:
-        description: Login exitoso
-        schema:
-          type: object
-          properties:
-            access_token:
-              type: string
-      401:
-        description: Credenciales inválidas
-    """
     try:
       data = request.get_json()
 
@@ -161,7 +77,7 @@ def login():
               "message": "Incorrect user or password"
           }),401
       
-      access_token = service.generate_jwt_token(email=user.email, username=user.username)
+      access_token = service.generate_jwt_token(email=user.email)
 
       return jsonify({
           "access_token": access_token
@@ -173,6 +89,7 @@ def login():
     
 
 @auth_bp.route('/verify-email/<token>', methods=['GET'])
+@swag_from(os.path.join(swagger_path, 'verify_email.yaml')) 
 def verify_email(token):
   try:
     service = UserService()
@@ -188,3 +105,27 @@ def verify_email(token):
     return jsonify({"message": "Email verificado con éxito"}), 200
   except Exception as e:
     return jsonify({"message": str(e)}), 400
+  
+
+@auth_bp.route('/profile', methods=['GET']) 
+@jwt_required()
+@swag_from(os.path.join(swagger_path, 'profile.yaml')) 
+def profile():
+  try:
+    identity = get_jwt_identity()
+    service = UserService()
+    user = service.get_by_email(identity)
+    user._id = str(user._id)
+
+    return jsonify({
+        "_id": str(user._id),
+        "username": user.username,
+        "age": user.age,
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+        "date_birth": user.date_birth,
+    }), 200
+  except Exception as e:
+    return jsonify({
+        "message": str(e)
+    }), 400

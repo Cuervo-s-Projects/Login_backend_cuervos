@@ -20,6 +20,16 @@ Este documento registra todos los cambios importantes realizados en el proyecto.
 
 ---
 
+## [0.2.2] - 2025-06-23
+
+### 🚀 Added
+- Endpoint `/profile` protegido con JWT para obtener la identidad del usuario autenticado.
+
+### 🛠️ Changed
+- Refactor del sistema de autenticación para simplificar el uso del campo `identity` en JWT.
+
+___
+
 ## [0.2.1] - 2025-06-22
 
 ### 🐛 Fixed

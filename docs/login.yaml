@@ -1,0 +1,55 @@
+tags:
+  - Autenticación
+summary: Login de usuario
+description: Permite a un usuario autenticarse y obtener un token JWT.
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - email
+          - password
+        properties:
+          email:
+            type: string
+            example: luis@gmail.com
+          password:
+            type: string
+            example: 1234
+parameters:
+- in: body
+  name: body
+  required: true
+  schema:
+    type: object
+    required:
+      - email
+      - password
+    properties:
+      email:
+        type: string
+        example: luis@gmail.com
+      password:
+        type: string
+        example: 1234
+responses:
+  200:
+    description: Login exitoso.
+    content:
+      application/json:
+        example:
+          access_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+  401:
+    description: Credenciales inválidas.
+    content:
+      application/json:
+        example:
+          message: Incorrect user or password
+  400:
+    description: Campos faltantes.
+    content:
+      application/json:
+        example:
+          message: Email and password are required

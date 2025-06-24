@@ -1,0 +1,98 @@
+tags:
+  - Autenticación
+summary: Registro de nuevo usuario
+description: Crea un nuevo usuario y envía un correo de verificación.
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - username
+          - email
+          - password
+          - password_confirm
+          - last_name
+          - first_name
+          - age
+          - date_birth
+        properties:
+          username:
+            type: string
+            example: luis
+          email:
+            type: string
+            example: luis@gmail.com
+          password:
+            type: string
+            example: 1234
+          password_confirm:
+            type: string
+            example: 1234
+          last_name:
+            type: string
+            example: luis
+          first_name:
+            type: string
+            example: Gonzales
+          age:
+            type: string
+            example: 20
+          date_birth:
+            type: string
+            format: date-time
+            example: 2025-06-17T21:33:47.200+00:00
+parameters:
+- in: body
+  name: body
+  required: true
+  schema:
+    type: object
+    required:
+      - username
+      - email
+      - password
+      - password_confirm
+      - last_name
+      - first_name
+      - age
+      - date_birth
+    properties:
+      username:
+        type: string
+        example: luis
+      email:
+        type: string
+        example: luis@gmail.com
+      password:
+        type: string
+        example: 1234
+      password_confirm:
+        type: string
+        example: 1234
+      last_name:
+        type: string
+        example: luis
+      first_name:
+        type: string
+        example: Gonzales
+      age:
+        type: string
+        example: 20
+      date_birth:
+        type: date
+        example: 2025-06-17T21:33:47.200+00:00 
+responses:
+  201:
+    description: Usuario creado exitosamente.
+    content:
+      application/json:
+        example:
+          message: User successfully created
+  400:
+    description: Error en la creación del usuario.
+    content:
+      application/json:
+        example:
+          message: Passwords do not match
