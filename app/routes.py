@@ -130,7 +130,7 @@ def profile():
         "message": str(e)
     }), 400
   
-@auth_bp.route('/profile', methods=['GET']) 
+@auth_bp.route('/type_user', methods=['GET']) 
 @jwt_required()
 @swag_from(os.path.join(swagger_path, 'type_user.yaml')) 
 def type_user():
