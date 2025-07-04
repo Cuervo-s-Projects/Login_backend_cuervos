@@ -1,0 +1,33 @@
+tags: 
+  - Autenticación
+summary: Obtener tipo de usuario
+description: Retorna el tipo de usuario autenticado obtenido del token JWT.
+security:
+  - BearerAuth: []
+parameters:
+  - name: Authorization
+    in: header
+    description: Token JWT con formato "Bearer <token>"
+    required: true
+    schema:
+      type: string
+      example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+responses:
+  200:
+    description: Tipo de perfil obtenido exitosamente
+    content:
+      application/json:
+        example:
+          user_id: "usuario123"
+  401:
+    description: Token inválido, expirado o faltante
+    content:
+      application/json:
+        example:
+          message: Token inválido o faltante
+  400:
+    description: Error al procesar la solicitud
+    content:
+      application/json:
+        example:
+          message: Error al decodificar el token

@@ -129,3 +129,20 @@ def profile():
     return jsonify({
         "message": str(e)
     }), 400
+  
+@auth_bp.route('/profile', methods=['GET']) 
+@jwt_required()
+@swag_from(os.path.join(swagger_path, 'type_user.yaml')) 
+def type_user():
+  try:
+    identity = get_jwt_identity()
+    service = UserService()
+    user = service.get_by_email(identity)
+
+    return jsonify({
+        "roles": user.roles
+    }), 200
+  except Exception as e:
+    return jsonify({
+        "message": str(e)
+    }), 400
