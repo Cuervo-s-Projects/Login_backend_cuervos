@@ -19,10 +19,16 @@ Este documento registra todos los cambios importantes realizados en el proyecto.
 - Fallo en la actualización de la información del usuario.
 
 ---
-## [0.2.3] - 2025-06-23
+## [0.2.4] - 2025-07-04
 
 ### 🚀 Added
-- Endpoint `/type_user` protegido con JWT para obtener le tipo de usuario autenticado.
+- Endpoint `/username` devuelve el nombre del usuario identificado por id.
+
+---
+## [0.2.3] - 2025-07-04
+
+### 🚀 Added
+- Endpoint `/type_user` protegido con JWT para obtener el tipo de usuario autenticado.
 
 ---
 

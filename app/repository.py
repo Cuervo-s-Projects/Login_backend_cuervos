@@ -1,6 +1,7 @@
 from app.models import User
 from config.db import mongodb
 from datetime import datetime
+from bson import ObjectId
 
 class Repository:
     
@@ -27,7 +28,7 @@ class Repository:
         return result
     
     def find_by_id(self, user_id):
-        user_data = self.collection.find_one({'_id': user_id})
+        user_data = self.collection.find_one({'_id': ObjectId(user_id)})
         return User.from_dict(user_data) if user_data else None
     
     def find_by_email(self, email):

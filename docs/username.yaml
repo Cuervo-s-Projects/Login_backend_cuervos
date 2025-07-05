@@ -1,0 +1,48 @@
+tags:
+  - Autenticación
+summary: Username de usuario
+description: Permite ver el username de un usuario por id.
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - id
+        properties:
+          id:
+            type: string
+            example: "1234"
+parameters:
+- in: body
+  name: body
+  required: true
+  schema:
+    type: object
+    required:
+      - email
+      - password
+    properties:
+      id:
+        type: string
+        example: "1234"
+responses:
+  200:
+    description: Usuario encontrado.
+    content:
+      application/json:
+        example:
+          access_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+  401:
+    description: Credenciales inválidas.
+    content:
+      application/json:
+        example:
+          message: Incorrect user or password
+  400:
+    description: Campos faltantes.
+    content:
+      application/json:
+        example:
+          message: Email and password are required

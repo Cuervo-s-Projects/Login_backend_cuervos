@@ -140,10 +140,34 @@ def type_user():
     user = service.get_by_email(identity)
 
     return jsonify({
-        "roles": user.roles,
-        "nameuser": user.first_name
+        "roles": user.roles
     }), 200
   except Exception as e:
     return jsonify({
         "message": str(e)
     }), 400
+  
+@auth_bp.route('/username', methods=['POST']) 
+@swag_from(os.path.join(swagger_path, 'username.yaml')) 
+def username():
+  try:
+    data = request.get_json()
+    id = data.get('id')
+    service = UserService()
+    user = service.get_by_id(id)
+
+    if user == None: 
+      return jsonify({
+        "message": "User not found"
+      }), 401
+
+    username = user.username
+
+    return jsonify({
+        "username": username
+    }), 200
+  except Exception as e:
+    return jsonify({
+        "message": str(e)
+    }), 400
+  

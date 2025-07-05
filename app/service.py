@@ -47,6 +47,10 @@ class UserService:
         self.repository.update(user=user)
         return True
     
+    def get_by_id(self, id):
+        user = self.repository.find_by_id(user_id=id)
+        return user
+    
     def generate_email_token(self, email):
         serializer = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
         return serializer.dumps(email, salt='email-confirm-salt')
