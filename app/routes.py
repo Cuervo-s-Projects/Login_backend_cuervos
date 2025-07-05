@@ -140,7 +140,8 @@ def type_user():
     user = service.get_by_email(identity)
 
     return jsonify({
-        "roles": user.roles
+        "roles": user.roles,
+        "nameuser": user.first_name
     }), 200
   except Exception as e:
     return jsonify({
